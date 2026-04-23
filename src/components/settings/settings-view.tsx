@@ -1,8 +1,11 @@
-import { ChevronLeft } from 'lucide-react';
+import type { Update } from '@tauri-apps/plugin-updater';
+import { ChevronLeft, Loader2 } from 'lucide-react';
+import { useState } from 'react';
 import { useResolvedTheme } from '@/hooks/useResolvedTheme';
 import type { AccentId } from '@/lib/accents';
 import type { ThemeMode } from '@/lib/constants';
 import type { UnitSystem } from '@/lib/units';
+import { checkForUpdate, installAndRelaunch, type UpdateCheck } from '@/lib/updater';
 import { AccentPicker } from './accent-picker';
 import { ThemePicker } from './theme-picker';
 import { UnitPicker } from './unit-picker';
@@ -27,6 +30,29 @@ export function SettingsView({
   setUnit,
 }: Props) {
   const dark = useResolvedTheme(themeMode) === 'dark';
+  const [busy, setBusy] = useState<'idle' | 'checking' | 'installing'>('idle');
+  const [status, setStatus] = useState<UpdateCheck | null>(null);
+  const [pending, setPending] = useState<Update | null>(null);
+
+  async function onCheck() {
+    setBusy('checking');
+    setStatus(null);
+    const { update, result } = await checkForUpdate();
+    setStatus(result);
+    setPending(update);
+    setBusy('idle');
+  }
+
+  async function onInstall() {
+    if (!pending) return;
+    setBusy('installing');
+    try {
+      await installAndRelaunch(pending);
+    } catch (e) {
+      setStatus({ kind: 'error', message: String(e) });
+      setBusy('idle');
+    }
+  }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
@@ -69,10 +95,34 @@ export function SettingsView({
 
         <div className="my-3.5 h-px bg-divider" />
 
-        <div className="flex justify-between text-[10.5px] tracking-[0.02em] text-text-faint">
+        <div className="mb-2 flex items-center justify-between text-[10.5px] tracking-[0.02em] text-text-faint">
           <span>OpenDesk 0.0.1</span>
-          <span>BLE standing desk</span>
+          <button
+            type="button"
+            onClick={status?.kind === 'available' ? onInstall : onCheck}
+            disabled={busy !== 'idle'}
+            className="flex items-center gap-1 rounded-md border border-chip-border bg-chip-bg px-2 py-1 text-[10.5px] font-medium text-text-main cursor-pointer hover:bg-chip-hover disabled:opacity-60 disabled:cursor-not-allowed"
+            style={{ fontFamily: 'inherit' }}
+          >
+            {busy !== 'idle' && <Loader2 size={10} strokeWidth={2} className="animate-spin" />}
+            {busy === 'checking' && 'Checking…'}
+            {busy === 'installing' && 'Installing…'}
+            {busy === 'idle' && status?.kind === 'available' && `Install ${status.version}`}
+            {busy === 'idle' && status?.kind !== 'available' && 'Check for updates'}
+          </button>
         </div>
+
+        {status?.kind === 'none' && (
+          <div className="text-[10px] text-text-faint">You're on the latest version.</div>
+        )}
+        {status?.kind === 'error' && (
+          <div className="text-[10px] text-red-500">{status.message}</div>
+        )}
+        {status?.kind === 'available' && status.notes && (
+          <div className="rounded border border-chip-border bg-chip-bg px-2 py-1.5 text-[10px] leading-relaxed text-text-dim whitespace-pre-wrap">
+            {status.notes}
+          </div>
+        )}
       </div>
     </div>
   );

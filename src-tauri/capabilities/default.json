@@ -8,6 +8,8 @@
     "core:event:allow-unlisten",
     "notification:allow-notify",
     "notification:allow-request-permission",
-    "notification:allow-is-permission-granted"
+    "notification:allow-is-permission-granted",
+    "updater:default",
+    "process:allow-restart"
   ]
 }

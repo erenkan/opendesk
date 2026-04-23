@@ -1,40 +1,36 @@
-# OpenDesk
+<div align="center">
+  <img src="src-tauri/icons/icon-1024.png" alt="OpenDesk" width="128" height="128" />
 
-[![CI](https://github.com/erenkan/opendesk/actions/workflows/ci.yml/badge.svg)](https://github.com/erenkan/opendesk/actions/workflows/ci.yml)
+  # OpenDesk
 
-Cross-platform menubar/tray app to control Linak DPG1C standing desks over
-Bluetooth Low Energy. Built with Tauri v2 (Rust) + React/TypeScript.
+  **Control your Linak standing desk from the menu bar.**
 
-- Tray-only app (no Dock icon on macOS, no taskbar entry on Linux)
-- Live height readout + hold-to-move arrows + user presets
-- Sit-stand reminder with native desktop notifications
-- Backend-driven BLE session with auto-reconnect watchdog
+  No phone app, no remote, no friction — just a tap to sit or stand.
 
-## Install
+  [![CI](https://github.com/erenkan/opendesk/actions/workflows/ci.yml/badge.svg)](https://github.com/erenkan/opendesk/actions/workflows/ci.yml)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+</div>
 
-Grab the latest build for your platform from
-[Releases](https://github.com/erenkan/opendesk/releases). macOS and Linux
-are the supported targets.
+## Download
 
-### macOS
+[**Download the latest release**](https://github.com/erenkan/opendesk/releases/latest) — macOS (Apple Silicon & Intel) and Linux.
 
-`.dmg` ships separate bundles for Apple Silicon and Intel. Builds are
-Developer ID-signed and notarized — drag to `/Applications` and launch
-normally. App auto-updates from GitHub Releases (Settings → Check for
-updates).
+The macOS build is Developer ID-signed + notarized and **auto-updates** from
+GitHub Releases. Install once and you're set.
 
-### Linux
+## What It Does
 
-Download the `.AppImage` (portable) or `.deb` (Debian / Ubuntu). GNOME
-needs `gnome-shell-extension-appindicator` for the tray icon to appear.
-KDE is fine out of the box.
+OpenDesk lives in your menu bar and talks to Linak DPG1C-class desks over
+Bluetooth LE. Tap, hold, or hit a preset — your desk responds.
 
-## Compatible desks
+- **One click to sit or stand.** Custom presets with editable heights and labels.
+- **Hold-to-move arrows.** Fine-grained adjustment without leaving the panel.
+- **Live height readout.** cm or inches — your choice.
+- **Stand reminder.** Native desktop notification on your interval (1–240 min, fully customizable).
+- **Survives sleep/wake.** Backend watchdog reconnects automatically when CoreBluetooth drops the link.
+- **Tray-only.** No Dock icon on macOS, no taskbar entry on Linux.
 
-OpenDesk's BLE layer is written around the Linak DPG1C protocol. Controllers
-sharing the same chipset / command set (IKEA Idasen is a well-known example)
-work out of the box. Other brands need a dedicated protocol module — see
-[Adding a new desk](#adding-a-new-desk).
+## Compatible Desks
 
 | Brand / model       | Status       | Notes                                              |
 |---------------------|--------------|----------------------------------------------------|
@@ -48,9 +44,35 @@ work out of the box. Other brands need a dedicated protocol module — see
 `🧪 likely` = same chipset family, should work; unconfirmed.
 `❌ not yet` = different BLE protocol, no module exists.
 
-## Adding a new desk
+Want a desk that's not listed?
+[Open a request.](https://github.com/erenkan/opendesk/issues/new/choose)
 
-OpenDesk welcomes per-brand PRs — `ble/linak.rs` is the reference you copy.
+## Permissions
+
+On first launch macOS prompts for Bluetooth access. If you deny it and change
+your mind, grant it again at **System Settings → Privacy & Security → Bluetooth
+→ OpenDesk**. Without permission, scans return an empty list silently —
+OpenDesk surfaces a toast after 10 s if no peripherals appear.
+
+Linux: user must be in the `bluetooth` group; GNOME also needs the
+`gnome-shell-extension-appindicator` extension for the tray icon to render.
+
+## Platform requirements
+
+| Platform | Minimum |
+|----------|---------|
+| macOS    | 11 Big Sur |
+| Linux    | BlueZ 5.50+, user in the `bluetooth` group |
+
+## Contributing
+
+PRs welcome — especially new desk-protocol modules. The architecture is
+documented in [`src-tauri/src/ble/manager.rs`](src-tauri/src/ble/manager.rs)
+(state machine + move-loop) and [`src/hooks/useDesk.ts`](src/hooks/useDesk.ts)
+(IPC subscription). Protocol details live in
+[`src-tauri/src/ble/linak.rs`](src-tauri/src/ble/linak.rs), which is pure and
+unit-tested.
+
 Start with a [New desk brand](.github/ISSUE_TEMPLATE/new-desk.yml) issue to
 share the protocol research first (service UUID, command bytes, position
 encoding, handshake if any); then a PR touches:
@@ -61,63 +83,61 @@ encoding, handshake if any); then a PR touches:
 - Unit tests in the new module: encode/decode round-trip, boundary clamping
 - The compatibility table above — a row for your desk
 
-For BLE sniffing tips and an annotated walkthrough of `linak.rs`, see the
-issue template and the module's own docs.
+## License
 
-## Platform requirements
+[MIT](LICENSE)
 
-| Platform | Minimum |
-|----------|---------|
-| macOS    | 11 Big Sur |
-| Linux    | BlueZ 5.50+, user in the `bluetooth` group |
+---
 
-Linux users on GNOME need the `gnome-shell-extension-appindicator` extension
-for the tray icon to show up. KDE works out of the box.
+<details>
+<summary><strong>Build from source</strong></summary>
 
-## Development
+### Stack
 
-Prerequisites: Rust (stable, 1.77+), Node 18+, pnpm, and the Tauri system
-dependencies for your OS — see <https://v2.tauri.app/start/prerequisites/>.
-macOS contributors editing the app icon additionally need Xcode (for
-`actool`) and [Icon Composer](https://developer.apple.com/icon-composer/)
-to regenerate `src-tauri/icons/AppIcon.icon`.
+Tauri v2 (Rust) backend + React/TypeScript frontend, Tailwind 4 for styling,
+[`btleplug`](https://github.com/deviceplug/btleplug) for cross-platform BLE,
+[`tauri-nspanel`](https://github.com/ahkohd/tauri-nspanel) for the macOS NSPanel
+popover.
+
+### Prerequisites
+
+Rust (stable, 1.77+), Node 18+, pnpm, and the Tauri system dependencies for
+your OS — see <https://v2.tauri.app/start/prerequisites/>.
+
+macOS contributors editing the app icon additionally need Xcode (for `actool`)
+and [Icon Composer](https://developer.apple.com/icon-composer/) to regenerate
+`src-tauri/icons/AppIcon.icon`.
+
+### Run
 
 ```bash
 pnpm install
 pnpm tauri dev        # hot-reload dev build
 ```
 
-On macOS 26 Tahoe (Darwin 25+) the raw binary panics during launch (tao
-#1171). Use the bundled `.app` for day-to-day testing:
+On macOS 26 Tahoe (Darwin 25+) the raw binary panics during launch
+([tao#1171](https://github.com/tauri-apps/tao/issues/1171)). Use the bundled
+`.app` for day-to-day testing:
 
 ```bash
 pnpm app:rebuild      # kill running, rebuild, register, launch .app
 pnpm app:logs         # tail backend log at ~/Library/Logs/app.opendesk.menubar/
 ```
 
-## Scripts
+### Scripts
 
 | Script | What it does |
 |--------|---------------|
 | `pnpm dev` | Vite dev server only (no Tauri) |
 | `pnpm build` | `tsc && vite build` — production web bundle |
 | `pnpm tauri dev` | Tauri dev window + hot reload |
-| `pnpm app:dev` | First-time build + register + launch `.app` (includes `mac:icon`) |
 | `pnpm app:rebuild` | Kill, rebuild, re-register, relaunch `.app` (includes `mac:icon`) |
 | `pnpm app:logs` | Tail the backend log file |
 | `pnpm icons` | Re-render `icon.svg`/`tray-icon.svg` → PNGs → Tauri icon fan-out |
 | `pnpm mac:icon` | Compile `AppIcon.icon` via `actool`, inject `Assets.car` into the debug bundle, patch `Info.plist` (Liquid Glass pipeline — macOS-only, no-op elsewhere) |
 | `pnpm mac:icon:release` | Same for the release-profile bundle |
 
-## Permissions
-
-On first launch macOS will prompt for Bluetooth access. If you deny it and
-change your mind, grant it again at **System Settings → Privacy &
-Security → Bluetooth → OpenDesk**. Without permission, scans return an empty
-list silently — OpenDesk surfaces a toast after 10 s if no peripherals
-appear.
-
-## Project layout
+### Project layout
 
 ```
 src/                     # React/TypeScript frontend
@@ -142,7 +162,7 @@ scripts/
   mac-compile-icon.sh    # actool (`.icon` → Assets.car) + Info.plist patch
 ```
 
-## Known issues
+### Known issues
 
 - **macOS sleep/wake**: CoreBluetooth disconnects silently on system sleep
   without firing `didDisconnectPeripheral`. The watchdog in
@@ -165,15 +185,4 @@ scripts/
 - **Linux GNOME**: without the AppIndicator extension the tray icon is
   invisible. Install it separately.
 
-## Contributing
-
-Issues and pull requests welcome. This project is early — the architecture
-is documented in [`src-tauri/src/ble/manager.rs`](src-tauri/src/ble/manager.rs)
-(state machine + move-loop) and [`src/hooks/useDesk.ts`](src/hooks/useDesk.ts)
-(the single IPC subscription point). Any BLE protocol changes go through
-`src-tauri/src/ble/linak.rs`, which is pure and has unit tests
-(`cargo test -p opendesk --lib`).
-
-## License
-
-MIT — see [`LICENSE`](LICENSE).
+</details>

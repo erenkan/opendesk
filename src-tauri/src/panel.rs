@@ -19,6 +19,11 @@ pub fn toggle(_app: &tauri::AppHandle) {}
 
 #[cfg(target_os = "macos")]
 mod imp {
+    // `tauri_panel!` DSL requires the explicit `-> ()` return type on
+    // event handlers and macro-generated impls trip several clippy lints
+    // we can't address from outside the macro.
+    #![allow(clippy::unused_unit, clippy::let_unit_value)]
+
     use tauri::{AppHandle, Manager, Position, Size};
     use tauri_nspanel::{
         tauri_panel, CollectionBehavior, ManagerExt, PanelLevel, StyleMask, WebviewWindowExt,
@@ -105,9 +110,8 @@ mod imp {
         let Some(tray) = app.tray_by_id("tray") else {
             return;
         };
-        match tray.rect() {
-            Ok(Some(rect)) => position_at_tray(app, rect.position, rect.size),
-            _ => {}
+        if let Ok(Some(rect)) = tray.rect() {
+            position_at_tray(app, rect.position, rect.size)
         }
     }
 

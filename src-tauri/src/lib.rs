@@ -56,12 +56,12 @@ pub fn run() {
         .setup(|app| {
             #[cfg(target_os = "macos")]
             {
-                let _ = app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+                app.set_activation_policy(tauri::ActivationPolicy::Accessory);
                 // `LSUIElement`/Accessory apps aren't represented in the dock,
                 // so macOS falls back to a generic bell glyph in the
                 // Notification Center banner. Pointing NSApp at our bundle
                 // icon fixes that.
-                set_ns_app_icon(&app.handle());
+                set_ns_app_icon(app.handle());
             }
 
             app.manage(AppState::new(app.handle().clone()));

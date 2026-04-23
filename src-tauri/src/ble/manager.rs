@@ -723,35 +723,6 @@ fn is_direction_reversal(current_cm: f32, current_speed: i16, target_cm: f32) ->
     (moving_up && target_below) || (moving_down && target_above)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::is_direction_reversal;
-
-    #[test]
-    fn stopped_is_never_reversal() {
-        assert!(!is_direction_reversal(80.0, 0, 120.0));
-        assert!(!is_direction_reversal(120.0, 0, 80.0));
-    }
-
-    #[test]
-    fn same_direction_is_not_reversal() {
-        assert!(!is_direction_reversal(80.0, 100, 120.0));
-        assert!(!is_direction_reversal(120.0, -100, 80.0));
-    }
-
-    #[test]
-    fn opposite_direction_is_reversal() {
-        assert!(is_direction_reversal(100.0, -100, 120.0));
-        assert!(is_direction_reversal(100.0, 100, 80.0));
-    }
-
-    #[test]
-    fn target_within_dead_zone_is_not_reversal() {
-        assert!(!is_direction_reversal(100.0, 100, 99.7));
-        assert!(!is_direction_reversal(100.0, -100, 100.3));
-    }
-}
-
 /// Adapter-level scan for a specific peripheral id. Free function (no
 /// `&self`) so the watchdog can run it without holding the controller
 /// mutex — commands like `disconnect` stay responsive during the ~6 s
@@ -814,16 +785,45 @@ async fn prime_user_id(peripheral: &Peripheral, dpg: &Characteristic) -> Result<
     };
     // DPG bytes include controller fingerprint; keep them at debug so
     // release logs don't carry device identity.
-    log::debug!("DPG user_id response: {:02x?}", resp);
+    log::debug!("DPG user_id response: {resp:02x?}");
 
     // Valid response starts with 0x01; payload bytes live from index 2.
     if resp.len() >= 3 && resp[0] == 0x01 && resp[2] != 0x01 {
         let mut payload: Vec<u8> = vec![0x7F, linak::DPG_CMD_USER_ID, 0x80, 0x01];
         payload.extend_from_slice(&resp[3..]);
-        log::debug!("DPG setting user_id[0]=1 via {:02x?}", payload);
+        log::debug!("DPG setting user_id[0]=1 via {payload:02x?}");
         peripheral
             .write(dpg, &payload, WriteType::WithResponse)
             .await?;
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::is_direction_reversal;
+
+    #[test]
+    fn stopped_is_never_reversal() {
+        assert!(!is_direction_reversal(80.0, 0, 120.0));
+        assert!(!is_direction_reversal(120.0, 0, 80.0));
+    }
+
+    #[test]
+    fn same_direction_is_not_reversal() {
+        assert!(!is_direction_reversal(80.0, 100, 120.0));
+        assert!(!is_direction_reversal(120.0, -100, 80.0));
+    }
+
+    #[test]
+    fn opposite_direction_is_reversal() {
+        assert!(is_direction_reversal(100.0, -100, 120.0));
+        assert!(is_direction_reversal(100.0, 100, 80.0));
+    }
+
+    #[test]
+    fn target_within_dead_zone_is_not_reversal() {
+        assert!(!is_direction_reversal(100.0, 100, 99.7));
+        assert!(!is_direction_reversal(100.0, -100, 100.3));
+    }
 }

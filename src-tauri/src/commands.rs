@@ -1,4 +1,4 @@
-use tauri::{AppHandle, Manager, State};
+use tauri::{AppHandle, State};
 
 use crate::ble::{
     manager::{DeviceInfo, MoveDir, StatusSnapshot},

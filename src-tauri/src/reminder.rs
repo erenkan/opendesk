@@ -7,15 +7,18 @@
 //! fire a native notification when the deadline hits.
 //!
 //! Frontend flow:
-//!   - `start_reminder(mins)`                → spawns loop, returns new state
-//!   - `get_reminder_state()`                → progress for the progress bar
-//!   - `stop_reminder()`                     → cancels loop
+//!
+//! - `start_reminder(mins)` — spawns loop, returns new state
+//! - `get_reminder_state()` — progress for the progress bar
+//! - `stop_reminder()` — cancels loop
+//!
 //! Events:
-//!   - `desk://reminder-fire`                → fired each time the deadline
-//!     expires. Payload: `{ intervalMins }`. The loop auto-resets so the
-//!     countdown starts over on its own.
-//!   - `desk://reminder-state`               → fired on every start / stop
-//!     so the UI mirrors authoritative backend state.
+//!
+//! - `desk://reminder-fire` — fired each time the deadline expires.
+//!   Payload: `{ intervalMins }`. The loop auto-resets so the countdown
+//!   starts over on its own.
+//! - `desk://reminder-state` — fired on every start / stop so the UI
+//!   mirrors authoritative backend state.
 
 use std::sync::Arc;
 

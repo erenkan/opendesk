@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
 import { Check, Contrast, Moon, Sun } from 'lucide-react';
+import type { ReactElement } from 'react';
 import { cn } from '@/lib/cn';
 import type { ThemeMode } from '@/lib/constants';
 

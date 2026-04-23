@@ -72,9 +72,17 @@ jobs:
         run: cargo test --lib
 
       # Scan Cargo.lock against the RustSec advisory DB. Runs once on
-      # Linux only since the advisory set is platform-independent.
+      # Linux only since the advisory set is platform-independent. The
+      # rustsec/audit-check action can't handle our Cargo.lock under
+      # src-tauri/ (it doesn't accept working-directory on a `uses:`
+      # step), so install the binary and run cargo-audit directly.
+      - name: Install cargo-audit
+        if: matrix.os == 'ubuntu-latest'
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-audit
+
       - name: Security audit
         if: matrix.os == 'ubuntu-latest'
-        uses: rustsec/audit-check@v2.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: src-tauri
+        run: cargo audit

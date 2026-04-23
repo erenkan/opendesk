@@ -1,3 +1,19 @@
+# Release process:
+#   1. Bump version in 4 places — package.json, src-tauri/tauri.conf.json,
+#      src-tauri/Cargo.toml, src/components/settings/settings-view.tsx
+#      (the "OpenDesk X.Y.Z" label). The version-validation step below
+#      fails the build if any drift.
+#   2. Commit, tag, push:
+#        git commit -am "release: vX.Y.Z"
+#        git tag vX.Y.Z
+#        git push origin main --tags
+#   3. Workflow runs across macOS (arm64 + intel) and Linux, produces a
+#      DRAFT release. Open GitHub → Releases, review assets, publish.
+#
+# Note: the macOS .dmg ships the classic .icns (no Liquid Glass) — local
+# `pnpm mac:icon` patches dev .app but CI can't inject into the .dmg
+# without a rebuild step. Resolved once Tauri ships #14207.
+
 name: Release
 
 on:

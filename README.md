@@ -183,41 +183,6 @@ is documented in [`src-tauri/src/ble/manager.rs`](src-tauri/src/ble/manager.rs)
 `src-tauri/src/ble/linak.rs`, which is pure and has unit tests
 (`cargo test -p opendesk --lib`).
 
-## Releasing
-
-Releases are built by [`.github/workflows/release.yml`](.github/workflows/release.yml)
-when a `v*` tag lands on `main`. The matrix covers
-`aarch64-apple-darwin`, `x86_64-apple-darwin`, and `ubuntu-latest`.
-
-Bump the version in **four** places before tagging (the workflow refuses
-to proceed if any drift):
-
-- `package.json` `.version`
-- `src-tauri/tauri.conf.json` `.version`
-- `src-tauri/Cargo.toml` `[package].version`
-- `src/components/settings/settings-view.tsx` — the `OpenDesk X.Y.Z`
-  label in the footer row
-
-Then:
-
-```bash
-git commit -am "release: v0.0.2"
-git tag v0.0.2
-git push --tags
-```
-
-The workflow creates a **draft** release with the bundles attached — open
-GitHub → Releases, review the assets, add release notes, and publish.
-
-Signing + notarization + auto-updater env vars are prewired in the
-workflow but commented. Uncomment when the relevant secrets exist.
-
-**Caveat:** the macOS `.dmg` in CI-built releases ships the classic-`.icns`
-icon, not Liquid Glass. See the
-[known issue on Tauri `.icon` support](#known-issues) — the local
-`pnpm mac:icon` pipeline patches a dev-built `.app` but CI can't inject
-into the `.dmg` without a rebuild step. Resolved once Tauri ships #14207.
-
 ## License
 
 MIT — see [`LICENSE`](LICENSE).

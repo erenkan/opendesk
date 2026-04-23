@@ -162,5 +162,6 @@ jobs:
           prerelease: false
           includeUpdaterJson: true
           # createUpdaterArtifacts lives in this overlay so local
-          # `pnpm tauri build` doesn't need the signing key — only CI does.
-          args: ${{ matrix.args }} --config tauri.release.conf.json
+          # `pnpm tauri build` doesn't need the signing key — only CI
+          # does. Path is relative to the repo root (CWD of tauri-action).
+          args: ${{ matrix.args }} --config src-tauri/tauri.release.conf.json

@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { Check, Contrast, Moon, Sun } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import type { ThemeMode } from '@/lib/constants';
@@ -7,7 +8,7 @@ type Props = {
   onChange: (m: ThemeMode) => void;
 };
 
-const MODES: { id: ThemeMode; label: string; icon: JSX.Element }[] = [
+const MODES: { id: ThemeMode; label: string; icon: ReactElement }[] = [
   { id: 'light', label: 'Light', icon: <Sun size={14} strokeWidth={1.5} /> },
   { id: 'dark', label: 'Dark', icon: <Moon size={14} strokeWidth={1.5} /> },
   { id: 'system', label: 'Auto', icon: <Contrast size={14} strokeWidth={1.5} /> },

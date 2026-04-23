@@ -60,10 +60,8 @@ export function Reminder() {
         }
       }
       if (permissionRef.current) {
-        const body =
-          intervalMins <= 1
-            ? 'Reminder fired (test mode).'
-            : `You\u2019ve been in the same position for ${intervalMins} minutes. Stretch, sip water, switch postures.`;
+        const unit = intervalMins === 1 ? 'minute' : 'minutes';
+        const body = `You\u2019ve been in the same position for ${intervalMins} ${unit}. Stretch, sip water, switch postures.`;
         deliverNotification('Time to move', body).catch(() => {
           // Fallback to plugin path if our command fails (e.g., bundle
           // missing on a dev hot-reload).
@@ -96,8 +94,8 @@ export function Reminder() {
     state.running && state.deadlineMs != null
       ? Math.max(0, Math.ceil((state.deadlineMs - now) / 1000))
       : 0;
-  const remMin = Math.floor(remainingSecs / 60);
-  const remSec = remainingSecs % 60;
+  const remainingLabel =
+    remainingSecs >= 60 ? `${Math.round(remainingSecs / 60)} min left` : `${remainingSecs}s left`;
 
   const handleToggle = (on: boolean) => {
     if (on) {
@@ -130,9 +128,7 @@ export function Reminder() {
             <span>Every</span>
             <IntervalPicker mins={state.intervalMins} onChange={handleIntervalChange} />
             <span className="opacity-50">·</span>
-            <span className="whitespace-nowrap">
-              {remMin}m {String(remSec).padStart(2, '0')}s left
-            </span>
+            <span className="whitespace-nowrap">{remainingLabel}</span>
           </>
         ) : (
           <>

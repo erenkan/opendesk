@@ -1,8 +1,8 @@
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { ChevronUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { MAX_H, MIN_H } from '@/lib/constants';
 import { desk } from '@/lib/desk';
-import { MIN_H, MAX_H } from '@/lib/constants';
 
 type Props = {
   heightCm: number;
@@ -56,7 +56,10 @@ export function SliderColumn({ heightCm, disabled, moving, onManualMove }: Props
         className="relative h-[82px] w-[6px] overflow-hidden rounded-full border border-chip-border bg-track-bg"
       >
         <div
-          className={cn('absolute inset-x-0 bottom-0 transition-[height] duration-100', moving && 'animate-pulse-dot')}
+          className={cn(
+            'absolute inset-x-0 bottom-0 transition-[height] duration-100',
+            moving && 'animate-pulse-dot',
+          )}
           style={{
             height: `${pct * 100}%`,
             background: 'linear-gradient(to top, var(--accent-ink), var(--accent-base))',

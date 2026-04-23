@@ -1,7 +1,7 @@
+import { Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
-import { MIN_H, MAX_H } from '@/lib/constants';
 import { StepperButton } from '@/components/ui/nudge-button';
-import { Plus, Minus } from 'lucide-react';
+import { MAX_H, MIN_H } from '@/lib/constants';
 import {
   displayNumber,
   formatHeight,
@@ -85,9 +85,7 @@ export function CustomEditor({
             <span className="text-xl font-semibold -tracking-[0.01em] text-text-main">
               {displayNumber(height, unit)}
             </span>
-            <span className="text-[11px] text-text-dim">
-              {formatUnitSuffix(unit)}
-            </span>
+            <span className="text-[11px] text-text-dim">{formatUnitSuffix(unit)}</span>
           </div>
           <StepperButton onClick={() => onHeight(clamp(height + step))}>
             <Plus size={10} strokeWidth={1.8} />
@@ -100,8 +98,7 @@ export function CustomEditor({
             className="absolute left-0 top-1/2 h-[3px] -translate-y-1/2 rounded"
             style={{
               width: `${((height - MIN_H) / (MAX_H - MIN_H)) * 100}%`,
-              background:
-                'linear-gradient(90deg, var(--accent-base), var(--accent-ink))',
+              background: 'linear-gradient(90deg, var(--accent-base), var(--accent-ink))',
             }}
           />
           <input
@@ -144,11 +141,9 @@ export function CustomEditor({
           className="flex-[1.4] rounded-md border px-2.5 py-[7px] text-xs font-semibold text-white cursor-pointer shadow-[0_1px_0_rgba(255,255,255,0.3)_inset]"
           style={{
             fontFamily: 'inherit',
-            background:
-              'linear-gradient(180deg, var(--accent-base), var(--accent-ink))',
+            background: 'linear-gradient(180deg, var(--accent-base), var(--accent-ink))',
             borderColor: 'var(--accent-ink)',
-            boxShadow:
-              '0 1px 0 rgba(255,255,255,0.3) inset, 0 2px 6px var(--accent-ink)44',
+            boxShadow: '0 1px 0 rgba(255,255,255,0.3) inset, 0 2px 6px var(--accent-ink)44',
           }}
         >
           Save

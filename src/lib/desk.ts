@@ -59,10 +59,8 @@ const EVT = {
 
 export const desk = {
   scanAndConnect: () => invoke<DeviceInfo>('scan_and_connect'),
-  scanDevices: (durationMs = 4000) =>
-    invoke<DeviceInfo[]>('scan_devices', { durationMs }),
-  connectDevice: (address: string) =>
-    invoke<DeviceInfo>('connect_device', { address }),
+  scanDevices: (durationMs = 4000) => invoke<DeviceInfo[]>('scan_devices', { durationMs }),
+  connectDevice: (address: string) => invoke<DeviceInfo>('connect_device', { address }),
   disconnect: () => invoke<void>('disconnect_desk'),
   pauseSession: () => invoke<void>('pause_session'),
   resumeSession: () => invoke<void>('resume_session'),

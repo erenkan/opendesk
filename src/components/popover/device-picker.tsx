@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { desk, type DeviceInfo } from '@/lib/desk';
+import { type DeviceInfo, desk } from '@/lib/desk';
 
 type Props = {
   onPicked: () => void;
@@ -63,12 +63,8 @@ export function DevicePicker({ onPicked }: Props) {
           onClick={() => pick(d.address)}
           className="mb-0.5 flex w-full items-center gap-2 rounded-md border border-chip-border bg-transparent px-2 py-1.5 text-left text-xs text-text-main cursor-pointer hover:bg-chip-bg"
         >
-          <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-            {d.device}
-          </span>
-          <span className="font-mono text-[10px] text-text-faint">
-            {d.address.slice(-8)}
-          </span>
+          <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">{d.device}</span>
+          <span className="font-mono text-[10px] text-text-faint">{d.address.slice(-8)}</span>
         </button>
       ))}
     </div>

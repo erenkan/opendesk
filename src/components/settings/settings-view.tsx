@@ -1,10 +1,10 @@
-import type { ThemeMode } from '@/lib/constants';
-import type { AccentId } from '@/lib/accents';
-import type { UnitSystem } from '@/lib/units';
-import { useResolvedTheme } from '@/hooks/useResolvedTheme';
 import { ChevronLeft } from 'lucide-react';
-import { ThemePicker } from './theme-picker';
+import { useResolvedTheme } from '@/hooks/useResolvedTheme';
+import type { AccentId } from '@/lib/accents';
+import type { ThemeMode } from '@/lib/constants';
+import type { UnitSystem } from '@/lib/units';
 import { AccentPicker } from './accent-picker';
+import { ThemePicker } from './theme-picker';
 import { UnitPicker } from './unit-picker';
 
 type Props = {
@@ -55,16 +55,11 @@ export function SettingsView({
         {themeMode === 'system' && (
           <div className="mb-3.5 rounded-[7px] border border-chip-border bg-chip-bg px-2.5 py-2 text-[11px] leading-relaxed text-text-dim">
             Matches your macOS appearance — currently{' '}
-            <strong className="font-semibold text-text-main">
-              {dark ? 'Dark' : 'Light'}
-            </strong>
-            .
+            <strong className="font-semibold text-text-main">{dark ? 'Dark' : 'Light'}</strong>.
           </div>
         )}
 
-        <div className="mb-1.5 text-[10.5px] font-medium text-text-dim">
-          Accent
-        </div>
+        <div className="mb-1.5 text-[10.5px] font-medium text-text-dim">Accent</div>
         <AccentPicker accent={accent} onChange={setAccent} />
 
         <div className="mb-2 mt-3 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-text-faint">

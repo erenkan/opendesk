@@ -1,6 +1,6 @@
-import type { ThemeMode } from '@/lib/constants';
-import { Sun, Moon, Contrast, Check } from 'lucide-react';
+import { Check, Contrast, Moon, Sun } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import type { ThemeMode } from '@/lib/constants';
 
 type Props = {
   mode: ThemeMode;
@@ -38,8 +38,8 @@ export function ThemePicker({ mode, onChange }: Props) {
                   m.id === 'light'
                     ? 'linear-gradient(135deg, #fafafa, #e8e4df)'
                     : m.id === 'dark'
-                    ? 'linear-gradient(135deg, #2a2a30, #16161a)'
-                    : 'linear-gradient(135deg, #fafafa 0%, #fafafa 50%, #2a2a30 50%, #16161a 100%)',
+                      ? 'linear-gradient(135deg, #2a2a30, #16161a)'
+                      : 'linear-gradient(135deg, #fafafa 0%, #fafafa 50%, #2a2a30 50%, #16161a 100%)',
                 border: active
                   ? '1.5px solid var(--accent-base)'
                   : '0.5px solid var(--chip-border)',
@@ -48,10 +48,7 @@ export function ThemePicker({ mode, onChange }: Props) {
               <div
                 className="absolute left-2 bottom-[7px] top-[7px] w-[3px] rounded"
                 style={{
-                  background:
-                    m.id === 'light'
-                      ? 'rgba(20,18,16,0.15)'
-                      : 'rgba(255,255,255,0.2)',
+                  background: m.id === 'light' ? 'rgba(20,18,16,0.15)' : 'rgba(255,255,255,0.2)',
                 }}
               >
                 <div
@@ -62,28 +59,19 @@ export function ThemePicker({ mode, onChange }: Props) {
               <div
                 className="absolute right-2 top-2.5 left-[18px] h-[5px] rounded"
                 style={{
-                  background:
-                    m.id === 'light'
-                      ? 'rgba(20,18,16,0.14)'
-                      : 'rgba(255,255,255,0.18)',
+                  background: m.id === 'light' ? 'rgba(20,18,16,0.14)' : 'rgba(255,255,255,0.18)',
                 }}
               />
               <div
                 className="absolute right-3.5 top-5 left-[18px] h-1 rounded"
                 style={{
-                  background:
-                    m.id === 'light'
-                      ? 'rgba(20,18,16,0.09)'
-                      : 'rgba(255,255,255,0.1)',
+                  background: m.id === 'light' ? 'rgba(20,18,16,0.09)' : 'rgba(255,255,255,0.1)',
                 }}
               />
               <div
                 className="absolute right-[18px] top-[30px] left-[18px] h-1 rounded"
                 style={{
-                  background:
-                    m.id === 'light'
-                      ? 'rgba(20,18,16,0.09)'
-                      : 'rgba(255,255,255,0.1)',
+                  background: m.id === 'light' ? 'rgba(20,18,16,0.09)' : 'rgba(255,255,255,0.1)',
                 }}
               />
               {active && (

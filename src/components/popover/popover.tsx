@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { useDesk } from '@/hooks/useDesk';
+import { SettingsView } from '@/components/settings/settings-view';
 import { useAutoSession } from '@/hooks/useAutoSession';
-import { MIN_H, MAX_H, type ThemeMode } from '@/lib/constants';
+import { useDesk } from '@/hooks/useDesk';
 import type { AccentId } from '@/lib/accents';
+import { MAX_H, MIN_H, type ThemeMode } from '@/lib/constants';
 import type { UnitSystem } from '@/lib/units';
+import { Footer } from './footer';
 import { HeightHeader } from './height-header';
-import { SliderColumn } from './slider-column';
 import { PresetList } from './preset-list';
 import { Reminder } from './reminder';
-import { Footer } from './footer';
-import { SettingsView } from '@/components/settings/settings-view';
+import { SliderColumn } from './slider-column';
 
 type Props = {
   themeMode: ThemeMode;
@@ -20,14 +20,7 @@ type Props = {
   setUnit: (u: UnitSystem) => void;
 };
 
-export function Popover({
-  themeMode,
-  setThemeMode,
-  accent,
-  setAccent,
-  unit,
-  setUnit,
-}: Props) {
+export function Popover({ themeMode, setThemeMode, accent, setAccent, unit, setUnit }: Props) {
   const d = useDesk();
   useAutoSession(d.connection);
   const [view, setView] = useState<'main' | 'settings'>('main');

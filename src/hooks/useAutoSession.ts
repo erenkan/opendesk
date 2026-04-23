@@ -1,10 +1,5 @@
 import { useEffect, useRef } from 'react';
-import {
-  desk,
-  LAST_DEVICE_KEY,
-  type ConnectionUpdate,
-  type LastDevice,
-} from '@/lib/desk';
+import { type ConnectionUpdate, desk, LAST_DEVICE_KEY, type LastDevice } from '@/lib/desk';
 
 const PAUSE_DELAY_MS = 15_000;
 
@@ -77,12 +72,14 @@ export function useAutoSession(connection: ConnectionUpdate) {
     };
 
     let unlisten: (() => void) | undefined;
-    desk.onPanelVisibility((visible) => {
-      if (visible) onShown();
-      else onHidden();
-    }).then((u) => {
-      unlisten = u;
-    });
+    desk
+      .onPanelVisibility((visible) => {
+        if (visible) onShown();
+        else onHidden();
+      })
+      .then((u) => {
+        unlisten = u;
+      });
 
     // Best-effort resume on mount (popover already open).
     onShown();

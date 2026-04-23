@@ -1,15 +1,9 @@
-import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
-import { PresetItem } from './preset-item';
-import { CustomEditor } from './custom-editor';
-import {
-  loadPresets,
-  savePresets,
-  makePreset,
-  MAX_PRESETS,
-  type Preset,
-} from '@/lib/presets';
+import { useEffect, useState } from 'react';
+import { loadPresets, MAX_PRESETS, makePreset, type Preset, savePresets } from '@/lib/presets';
 import { formatHeight, type UnitSystem } from '@/lib/units';
+import { CustomEditor } from './custom-editor';
+import { PresetItem } from './preset-item';
 
 type Props = {
   activePresetId: string | null;
@@ -113,9 +107,7 @@ export function PresetList({
           <span className="flex h-[26px] w-[26px] items-center justify-center rounded-full border border-current opacity-70">
             <Plus size={13} strokeWidth={1.8} />
           </span>
-          <span className="text-[11.5px] font-medium leading-tight">
-            Save a preset
-          </span>
+          <span className="text-[11.5px] font-medium leading-tight">Save a preset</span>
           <span className="max-w-[160px] text-center text-[10.5px] leading-snug text-text-faint">
             Move the desk where you like it, then add it here.
           </span>
@@ -133,9 +125,7 @@ export function PresetList({
                 setEditingId(null);
                 onPresetGo(p);
               }}
-              onEdit={() =>
-                setEditingId((cur) => (cur === p.id ? null : p.id))
-              }
+              onEdit={() => setEditingId((cur) => (cur === p.id ? null : p.id))}
               onDelete={() => deletePreset(p.id)}
               editing={editingId === p.id}
             />

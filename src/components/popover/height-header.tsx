@@ -25,15 +25,12 @@ export function HeightHeader({ heightCm, moving, activePreset, unit }: Props) {
         <span
           className="bg-clip-text text-transparent"
           style={{
-            backgroundImage:
-              'linear-gradient(180deg, var(--accent-base), var(--accent-ink))',
+            backgroundImage: 'linear-gradient(180deg, var(--accent-base), var(--accent-ink))',
           }}
         >
           {displayNumber(heightCm, unit)}
         </span>
-        <span className="text-base font-medium text-text-dim">
-          {formatUnitSuffix(unit)}
-        </span>
+        <span className="text-base font-medium text-text-dim">{formatUnitSuffix(unit)}</span>
         {activePreset && (
           <span
             className="ml-auto self-center rounded-full border px-2 py-[3px] text-[11px] font-medium"

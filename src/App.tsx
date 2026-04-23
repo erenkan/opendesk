@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Popover } from '@/components/popover/popover';
 import { useResolvedTheme } from '@/hooks/useResolvedTheme';
+import { type AccentId, applyAccent, DEFAULT_ACCENT, loadAccent, saveAccent } from '@/lib/accents';
 import type { ThemeMode } from '@/lib/constants';
-import {
-  applyAccent,
-  DEFAULT_ACCENT,
-  loadAccent,
-  saveAccent,
-  type AccentId,
-} from '@/lib/accents';
 import { DEFAULT_UNIT, loadUnit, saveUnit, type UnitSystem } from '@/lib/units';
 
 export default function App() {

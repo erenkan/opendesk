@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
 import {
   isPermissionGranted,
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification';
-import { Toggle } from '@/components/ui/toggle';
+import { useEffect, useRef, useState } from 'react';
 import { IntervalPicker } from '@/components/ui/interval-picker';
+import { Toggle } from '@/components/ui/toggle';
 import { desk, type ReminderState } from '@/lib/desk';
 
 const DEFAULT_MINS = 60;
@@ -119,9 +119,7 @@ export function Reminder() {
   return (
     <div className="px-4 pt-3 pb-2.5">
       <div className="flex items-center gap-2.5">
-        <span className="whitespace-nowrap text-[13px] font-semibold">
-          Stand Reminder
-        </span>
+        <span className="whitespace-nowrap text-[13px] font-semibold">Stand Reminder</span>
         <div className="flex-1" />
         <Toggle on={state.running} onChange={handleToggle} />
       </div>

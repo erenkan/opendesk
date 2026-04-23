@@ -30,10 +30,7 @@ export function IntervalPicker({
       </button>
       {open && (
         <>
-          <div
-            onClick={() => setOpen(false)}
-            className="fixed inset-0 z-[9]"
-          />
+          <div onClick={() => setOpen(false)} className="fixed inset-0 z-[9]" />
           <div
             className={cn(
               'absolute bottom-full left-0 mb-1 min-w-[80px] z-10 rounded-[7px] p-[3px]',

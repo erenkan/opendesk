@@ -29,20 +29,8 @@ function render(svgPath, outPath, size) {
 }
 
 // Master app icon — 1024 is what `tauri icon` wants as source.
-render(
-  path.join(iconsDir, 'icon.svg'),
-  path.join(iconsDir, 'icon-1024.png'),
-  1024,
-);
+render(path.join(iconsDir, 'icon.svg'), path.join(iconsDir, 'icon-1024.png'), 1024);
 
 // Tray icon — template-friendly 22×22 plus retina 44×44.
-render(
-  path.join(iconsDir, 'tray-icon.svg'),
-  path.join(iconsDir, 'tray-icon.png'),
-  22,
-);
-render(
-  path.join(iconsDir, 'tray-icon.svg'),
-  path.join(iconsDir, 'tray-icon@2x.png'),
-  44,
-);
+render(path.join(iconsDir, 'tray-icon.svg'), path.join(iconsDir, 'tray-icon.png'), 22);
+render(path.join(iconsDir, 'tray-icon.svg'), path.join(iconsDir, 'tray-icon@2x.png'), 44);

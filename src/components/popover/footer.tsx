@@ -1,8 +1,8 @@
+import { Settings } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/cn';
-import { Settings } from 'lucide-react';
-import { DevicePicker } from './device-picker';
 import type { ConnectionUpdate } from '@/lib/desk';
+import { DevicePicker } from './device-picker';
 
 type Props = {
   connection: ConnectionUpdate;

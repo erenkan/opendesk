@@ -1,10 +1,4 @@
-export type AccentId =
-  | 'coral'
-  | 'ocean'
-  | 'forest'
-  | 'grape'
-  | 'sunset'
-  | 'graphite';
+export type AccentId = 'coral' | 'ocean' | 'forest' | 'grape' | 'sunset' | 'graphite';
 
 export type Accent = {
   id: AccentId;

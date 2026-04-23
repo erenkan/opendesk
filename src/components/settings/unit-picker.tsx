@@ -31,20 +31,14 @@ export function UnitPicker({ unit, onChange }: Props) {
             style={
               active
                 ? {
-                    background:
-                      'linear-gradient(180deg, var(--accent-base), var(--accent-ink))',
+                    background: 'linear-gradient(180deg, var(--accent-base), var(--accent-ink))',
                     borderColor: 'var(--accent-ink)',
                   }
                 : undefined
             }
           >
             <span className="text-[13px] font-semibold">{o.label}</span>
-            <span
-              className={cn(
-                'text-[10px]',
-                active ? 'text-white/75' : 'text-text-faint',
-              )}
-            >
+            <span className={cn('text-[10px]', active ? 'text-white/75' : 'text-text-faint')}>
               {o.hint}
             </span>
           </button>

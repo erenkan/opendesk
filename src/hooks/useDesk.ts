@@ -1,13 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UnlistenFn } from '@tauri-apps/api/event';
-
-import {
-  desk,
-  type ConnectionUpdate,
-  type DeskError,
-  type HeightUpdate,
-} from '../lib/desk';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { clampCm } from '../lib/constants';
+import { type ConnectionUpdate, type DeskError, desk, type HeightUpdate } from '../lib/desk';
 
 export type UseDesk = {
   connection: ConnectionUpdate;
@@ -39,19 +33,30 @@ export function useDesk(): UseDesk {
     let cancelled = false;
 
     Promise.all([
-      desk.onConnection((c) => { if (!cancelled) setConnection(c); }),
-      desk.onHeight((h) => { if (!cancelled) setHeight(h); }),
-      desk.onError((e) => { if (!cancelled) setError(e); }),
+      desk.onConnection((c) => {
+        if (!cancelled) setConnection(c);
+      }),
+      desk.onHeight((h) => {
+        if (!cancelled) setHeight(h);
+      }),
+      desk.onError((e) => {
+        if (!cancelled) setError(e);
+      }),
     ]).then((fns) => {
       if (cancelled) fns.forEach((f) => f());
       else unsubs.current = fns;
     });
 
-    desk.getStatus().then((snap) => {
-      if (cancelled) return;
-      setConnection(snap.connection);
-      if (snap.lastHeight) setHeight(snap.lastHeight);
-    }).catch(() => { /* first boot before any event — ignore */ });
+    desk
+      .getStatus()
+      .then((snap) => {
+        if (cancelled) return;
+        setConnection(snap.connection);
+        if (snap.lastHeight) setHeight(snap.lastHeight);
+      })
+      .catch(() => {
+        /* first boot before any event — ignore */
+      });
 
     return () => {
       cancelled = true;
@@ -60,7 +65,7 @@ export function useDesk(): UseDesk {
     };
   }, []);
 
-  const run = useCallback(async <T,>(op: () => Promise<T>): Promise<T | void> => {
+  const run = useCallback(async <T>(op: () => Promise<T>): Promise<T | void> => {
     setError(null);
     try {
       return await op();

@@ -1,6 +1,6 @@
+import { Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/cn';
-import { Pencil, Trash2 } from 'lucide-react';
 
 type Props = {
   label: string;
@@ -63,9 +63,7 @@ export function PresetItem({
         >
           {numberLabel}
         </span>
-        <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-          {label}
-        </span>
+        <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">{label}</span>
         <span
           className={cn(
             'shrink-0 text-[11px] font-medium [font-feature-settings:"tnum"]',

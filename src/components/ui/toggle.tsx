@@ -15,7 +15,7 @@ export function Toggle({ on, onChange, disabled, className }: ToggleProps) {
       disabled={disabled}
       className={cn(
         'relative h-[22px] w-9 shrink-0 rounded-full p-0 transition-colors duration-200',
-        "shadow-[inset_0_0.5px_1px_rgba(0,0,0,0.12)]",
+        'shadow-[inset_0_0.5px_1px_rgba(0,0,0,0.12)]',
         on ? 'bg-accent-base' : 'bg-[rgba(120,120,128,0.3)]',
         disabled && 'opacity-50 cursor-not-allowed',
         className,

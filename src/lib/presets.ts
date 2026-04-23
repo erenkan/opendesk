@@ -1,4 +1,4 @@
-import { MIN_H, clampCm } from './constants';
+import { clampCm, MIN_H } from './constants';
 
 export type Preset = {
   id: string;
@@ -20,10 +20,7 @@ export function loadPresets(): Preset[] {
       .slice(0, MAX_PRESETS)
       .map((p, i) => ({
         id: p.id,
-        name:
-          typeof p.name === 'string' && p.name.trim()
-            ? p.name.slice(0, 24)
-            : `Preset ${i + 1}`,
+        name: typeof p.name === 'string' && p.name.trim() ? p.name.slice(0, 24) : `Preset ${i + 1}`,
         height: clampCm(Math.round(typeof p.height === 'number' ? p.height : MIN_H)),
       }));
   } catch {

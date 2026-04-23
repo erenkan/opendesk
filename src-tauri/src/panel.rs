@@ -12,9 +12,11 @@
 pub use imp::{show, toggle};
 
 #[cfg(not(target_os = "macos"))]
+#[allow(dead_code)]
 pub fn show(_app: &tauri::AppHandle) {}
 
 #[cfg(not(target_os = "macos"))]
+#[allow(dead_code)]
 pub fn toggle(_app: &tauri::AppHandle) {}
 
 #[cfg(target_os = "macos")]

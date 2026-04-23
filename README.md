@@ -14,22 +14,14 @@ Bluetooth Low Energy. Built with Tauri v2 (Rust) + React/TypeScript.
 
 Grab the latest build for your platform from
 [Releases](https://github.com/erenkan/opendesk/releases). macOS and Linux
-are supported targets; Windows is nice-to-have but not officially built.
+are the supported targets.
 
 ### macOS
 
-`.dmg` contains a universal-ish pair of bundles (Apple Silicon + Intel).
-The app is **unsigned** in v0, so Gatekeeper will refuse to open it on
-first launch. After dragging to `/Applications`, run:
-
-```bash
-xattr -cr /Applications/OpenDesk.app
-open /Applications/OpenDesk.app
-```
-
-`xattr -cr` strips the `com.apple.quarantine` flag the browser attached.
-We'll switch to signed + notarized builds once the project has an Apple
-Developer account.
+`.dmg` ships separate bundles for Apple Silicon and Intel. Builds are
+Developer ID-signed and notarized — drag to `/Applications` and launch
+normally. App auto-updates from GitHub Releases (Settings → Check for
+updates).
 
 ### Linux
 
@@ -77,7 +69,6 @@ issue template and the module's own docs.
 | Platform | Minimum |
 |----------|---------|
 | macOS    | 11 Big Sur |
-| Windows  | 10 build 1803+ (WinRT BLE API) |
 | Linux    | BlueZ 5.50+, user in the `bluetooth` group |
 
 Linux users on GNOME need the `gnome-shell-extension-appindicator` extension

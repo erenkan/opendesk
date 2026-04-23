@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="v1bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8A65"/>
+      <stop offset="1" stop-color="#D14A3A"/>
+    </linearGradient>
+    <clipPath id="v1clip">
+      <path d="M 512 0 C 110 0 0 110 0 512 C 0 914 110 1024 512 1024 C 914 1024 1024 914 1024 512 C 1024 110 914 0 512 0 Z"/>
+    </clipPath>
+    <linearGradient id="v1sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.32"/>
+      <stop offset="0.5" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#v1clip)">
+    <rect width="1024" height="1024" fill="url(#v1bg)"/>
+    <rect width="1024" height="520" fill="url(#v1sheen)"/>
+    <!-- desk top -->
+    <rect x="188" y="500" width="648" height="48" rx="10" fill="#fff"/>
+    <!-- legs (outer) -->
+    <rect x="320" y="548" width="44" height="300" rx="6" fill="#fff" opacity="0.92"/>
+    <rect x="660" y="548" width="44" height="300" rx="6" fill="#fff" opacity="0.92"/>
+    <!-- leg inner shadow -->
+    <rect x="330" y="548" width="24" height="140" rx="3" fill="#fff" opacity="0.35"/>
+    <rect x="670" y="548" width="24" height="140" rx="3" fill="#fff" opacity="0.35"/>
+    <!-- up arrow -->
+    <g stroke="#fff" stroke-width="44" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M512 420 L512 220"/>
+      <path d="M420 300 L512 210 L604 300"/>
+    </g>
+  </g>
+</svg>

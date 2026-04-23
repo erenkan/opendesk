@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Foreground layer for Icon Composer (macOS 26 Tahoe Liquid Glass).
+  No background, no clip path — Apple adds the squircle mask itself.
+  Set the coral gradient via Icon Composer's Document → Background Color.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- desk top -->
+  <rect x="188" y="500" width="648" height="48" rx="10" fill="#ffffff"/>
+  <!-- legs -->
+  <rect x="320" y="548" width="44" height="300" rx="6" fill="#ffffff"/>
+  <rect x="660" y="548" width="44" height="300" rx="6" fill="#ffffff"/>
+  <!-- up arrow -->
+  <g stroke="#ffffff" stroke-width="44" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M512 420 L512 220"/>
+    <path d="M420 300 L512 210 L604 300"/>
+  </g>
+</svg>

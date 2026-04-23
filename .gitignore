@@ -1,0 +1,25 @@
+# Build artifacts
+/dist/
+/src-tauri/target/
+/src-tauri/gen/schemas/
+
+# Dependencies
+/node_modules/
+
+# macOS
+.DS_Store
+*.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local

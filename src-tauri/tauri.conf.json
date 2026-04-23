@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "OpenDesk",
+  "version": "0.0.1",
+  "identifier": "app.opendesk.menubar",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "withGlobalTauri": false,
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: data: https://asset.localhost; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost; font-src 'self' data:"
+    },
+    "windows": [
+      {
+        "label": "main",
+        "title": "OpenDesk",
+        "width": 360,
+        "height": 580,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "visible": false
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": ["icons/tray-icon.png"],
+    "macOS": {
+      "minimumSystemVersion": "11.0"
+    }
+  }
+}

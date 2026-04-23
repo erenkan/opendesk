@@ -1,0 +1,132 @@
+name: "New desk brand / model"
+description: "Request support for a Bluetooth desk controller other than Linak DPG1C. Includes the protocol research needed before a PR."
+title: "[Desk] <Brand> <Model>"
+labels: ["new-desk", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping expand OpenDesk's hardware support. Most of this
+        form is about **protocol research** — the BLE service / characteristic
+        UUIDs, command bytes, and position encoding for your desk. Without
+        that, no code can be written.
+
+        If your desk uses a Linak controller (e.g. IKEA Idasen), it may
+        already work — try connecting first, file a bug if it doesn't.
+
+        For sniffing BLE traffic, `bleak` on Linux or
+        [rhyst/linak-controller](https://github.com/rhyst/linak-controller)'s
+        `--debug` are good starting points.
+
+  - type: input
+    id: brand
+    attributes:
+      label: Brand
+      placeholder: "e.g. JIECANG, Flexispot, Uplift, Desky"
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Model / firmware revision
+      placeholder: "e.g. JC35N2, controller PCB rev 2.3, firmware v1.0.4 if known"
+    validations:
+      required: true
+
+  - type: input
+    id: existing-app
+    attributes:
+      label: Existing mobile / desktop app (if any)
+      description: Link to the vendor app this desk ships with; helps reverse engineering.
+      placeholder: "e.g. https://play.google.com/store/..."
+
+  - type: input
+    id: service-uuid
+    attributes:
+      label: Primary service UUID
+      description: The 16- or 128-bit UUID of the service carrying height / control characteristics.
+      placeholder: "99fa0001-338a-1024-8a49-009c0215f78a"
+    validations:
+      required: true
+
+  - type: textarea
+    id: characteristics
+    attributes:
+      label: Relevant characteristic UUIDs
+      description: List each characteristic with its role (position notify, control write, reference-input write, error notify, etc.).
+      value: |
+        - position (notify):
+        - control (write):
+        - refinput (write):
+        - error (notify):
+        - other:
+    validations:
+      required: true
+
+  - type: textarea
+    id: commands
+    attributes:
+      label: Control command bytes
+      description: The raw bytes for each direct control command (up / down / stop / wake / any handshake opcodes).
+      value: |
+        - UP: `[0x?? 0x??]`
+        - DOWN: `[0x?? 0x??]`
+        - STOP: `[0x?? 0x??]`
+        - WAKE (if needed): `[0x?? 0x??]`
+        - Other:
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: position-encoding
+    attributes:
+      label: Height encoding
+      description: How the desk encodes position in notifications and reference-input writes. Include byte layout, endianness, base offset, units.
+      placeholder: |
+        e.g. u16 little-endian, raw = (cm - 60) * 10; 4-byte payload with speed in bytes[2..4] as i16 LE.
+    validations:
+      required: true
+
+  - type: textarea
+    id: handshake
+    attributes:
+      label: Handshake / pairing (if any)
+      description: Some controllers require an initial byte exchange before accepting writes (DPG user_id on Linak, etc.). Describe the sequence if known.
+
+  - type: textarea
+    id: sniff
+    attributes:
+      label: Raw sniff / logs
+      description: Paste a BLE trace (e.g. macOS PacketLogger, Wireshark, `bleak` debug log) showing a full up/down/stop cycle. Optional but invaluable.
+      render: text
+
+  - type: input
+    id: write-type
+    attributes:
+      label: Write type
+      description: "`WithoutResponse` (recommended) or `WithResponse`. Linak requires WithoutResponse — using WithResponse deadlocks after 1-2 packets."
+      value: "WithoutResponse"
+
+  - type: dropdown
+    id: contributor
+    attributes:
+      label: Will you submit the PR?
+      description: Marker for triage.
+      options:
+        - "Yes — I'll open a PR"
+        - "Maybe — I need help from a maintainer"
+        - "No — someone else, please"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: "I searched existing issues and this desk isn't already tracked"
+          required: true
+        - label: "I've tested with a Linak-compatible profile first; it doesn't work"
+          required: true

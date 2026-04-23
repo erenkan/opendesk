@@ -1,0 +1,145 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            args: "--target aarch64-apple-darwin"
+          - platform: macos-latest
+            args: "--target x86_64-apple-darwin"
+          - platform: ubuntu-latest
+            args: ""
+    runs-on: ${{ matrix.platform }}
+    env:
+      RELEASE_TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install Linux Tauri deps
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libglib2.0-dev \
+            libssl-dev \
+            libsoup-3.0-dev \
+            patchelf \
+            build-essential \
+            curl wget file
+
+      - run: pnpm install --frozen-lockfile
+
+      # Import the cert into an ephemeral keychain that only lives for this
+      # job. CI runners always start clean, so no cert state leaks between
+      # builds and we never touch a developer's login keychain.
+      - name: Import Apple Developer Certificate
+        if: matrix.platform == 'macos-latest'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          security import certificate.p12 -k build.keychain \
+            -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASSWORD" build.keychain
+          rm certificate.p12
+
+      - name: Validate release tag
+        shell: bash
+        run: |
+          if [[ -z "$RELEASE_TAG" ]]; then
+            echo "Missing RELEASE_TAG (push a v* tag)."
+            exit 1
+          fi
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid RELEASE_TAG: $RELEASE_TAG (expected vMAJOR.MINOR.PATCH)"
+            exit 1
+          fi
+
+      # App version lives in four places; all must agree with the git tag.
+      # Any drift here usually means a bump commit was forgotten.
+      - name: Validate app version matches tag
+        shell: bash
+        run: |
+          TAG_VERSION="${RELEASE_TAG#v}"
+
+          TAURI_CONF_VERSION=$(node -p 'require("./src-tauri/tauri.conf.json").version')
+          CARGO_VERSION=$(awk -F'"' '/^version =/ { print $2; exit }' ./src-tauri/Cargo.toml)
+          PKG_VERSION=$(node -p 'require("./package.json").version')
+          SETTINGS_VERSION=$(grep -oE 'OpenDesk [0-9]+\.[0-9]+\.[0-9]+' src/components/settings/settings-view.tsx | head -1 | awk '{print $2}')
+
+          fail=0
+          for pair in \
+              "tauri.conf.json:$TAURI_CONF_VERSION" \
+              "Cargo.toml:$CARGO_VERSION" \
+              "package.json:$PKG_VERSION" \
+              "settings-view.tsx:$SETTINGS_VERSION"; do
+            name="${pair%%:*}"
+            version="${pair##*:}"
+            if [[ "$version" != "$TAG_VERSION" ]]; then
+              echo "❌ $name version ($version) != tag version ($TAG_VERSION)"
+              fail=1
+            else
+              echo "✅ $name version matches ($version)"
+            fi
+          done
+          [[ "$fail" -eq 0 ]] || exit 1
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # macOS signing + notarization. tauri-action picks these up
+          # automatically and runs codesign + notarytool against the bundle.
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          # Tauri updater signing — uncomment when auto-updater plugin lands.
+          # TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          # TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ env.RELEASE_TAG }}
+          releaseName: ${{ env.RELEASE_TAG }}
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}

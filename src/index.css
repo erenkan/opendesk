@@ -1,0 +1,97 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ── Design tokens (light) ────────────────────────────────────────────── */
+:root {
+  --pop-bg: rgba(250, 248, 245, 0.98);
+  --pop-border: rgba(255, 255, 255, 0.6);
+  --text-main: rgba(20, 18, 16, 0.92);
+  --text-dim: rgba(20, 18, 16, 0.55);
+  --text-faint: rgba(20, 18, 16, 0.38);
+  --divider: rgba(20, 18, 16, 0.07);
+  --chip-bg: rgba(20, 18, 16, 0.04);
+  --chip-border: rgba(20, 18, 16, 0.06);
+  --track-bg: rgba(20, 18, 16, 0.06);
+  --nudge-bg: rgba(20, 18, 16, 0.04);
+  --nudge-border: rgba(20, 18, 16, 0.06);
+  --input-bg: #ffffff;
+  --picker-bg: rgba(255, 255, 255, 0.98);
+  --footer-bg: rgba(20, 18, 16, 0.025);
+  --picker-panel-bg: rgba(20, 18, 16, 0.03);
+
+  /* Accent (coral) — static for v0, can become runtime-swappable later. */
+  --accent-base: oklch(0.70 0.16 32);
+  --accent-ink: oklch(0.45 0.14 32);
+  --accent-soft: oklch(0.93 0.05 32);
+
+  --green-live: oklch(0.70 0.15 150);
+  --red-dead: oklch(0.60 0.22 25);
+}
+
+/* ── Design tokens (dark) ─────────────────────────────────────────────── */
+.dark {
+  --pop-bg: rgba(24, 24, 28, 0.98);
+  --pop-border: rgba(255, 255, 255, 0.09);
+  --text-main: rgba(245, 245, 250, 0.96);
+  --text-dim: rgba(235, 235, 245, 0.60);
+  --text-faint: rgba(235, 235, 245, 0.38);
+  --divider: rgba(255, 255, 255, 0.07);
+  --chip-bg: rgba(255, 255, 255, 0.05);
+  --chip-border: rgba(255, 255, 255, 0.07);
+  --track-bg: rgba(255, 255, 255, 0.08);
+  --nudge-bg: rgba(255, 255, 255, 0.06);
+  --nudge-border: rgba(255, 255, 255, 0.08);
+  --input-bg: rgba(0, 0, 0, 0.2);
+  --picker-bg: rgba(50, 50, 54, 0.98);
+  --footer-bg: rgba(0, 0, 0, 0.15);
+  --picker-panel-bg: rgba(0, 0, 0, 0.18);
+}
+
+@theme inline {
+  --color-pop-bg: var(--pop-bg);
+  --color-pop-border: var(--pop-border);
+  --color-text-main: var(--text-main);
+  --color-text-dim: var(--text-dim);
+  --color-text-faint: var(--text-faint);
+  --color-divider: var(--divider);
+  --color-chip-bg: var(--chip-bg);
+  --color-chip-border: var(--chip-border);
+  --color-track-bg: var(--track-bg);
+  --color-nudge-bg: var(--nudge-bg);
+  --color-nudge-border: var(--nudge-border);
+  --color-input-bg: var(--input-bg);
+  --color-picker-bg: var(--picker-bg);
+  --color-footer-bg: var(--footer-bg);
+  --color-picker-panel-bg: var(--picker-panel-bg);
+  --color-accent-base: var(--accent-base);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-green-live: var(--green-live);
+  --color-red-dead: var(--red-dead);
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+html, body, #root { margin: 0; height: 100vh; background: transparent; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  color: var(--text-main);
+  color-scheme: light dark;
+}
+
+button:focus { outline: none }
+button:focus-visible { outline: 2px solid rgba(80,130,255,0.6); outline-offset: 1px }
+
+/* ── Animations ───────────────────────────────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1 }
+  50% { opacity: 0.3 }
+}
+@keyframes ping-slow {
+  0% { transform: scale(1); opacity: 0.6 }
+  70%, 100% { transform: scale(2.6); opacity: 0 }
+}
+.animate-pulse-dot { animation: pulse 1s infinite; }
+.animate-ping-slow { animation: ping-slow 2s ease-out infinite; }

@@ -76,16 +76,36 @@ impl AppState {
                 continue;
             };
 
-            let alive = match time::timeout(Duration::from_secs(3), peripheral.is_connected()).await
-            {
-                Ok(Ok(v)) => v,
-                Ok(Err(err)) => {
-                    log::warn!("watchdog: is_connected() error: {err}");
-                    false
-                }
-                Err(_) => {
-                    log::warn!("watchdog: is_connected() timed out on stale handle");
-                    false
+            let passive_alive =
+                match time::timeout(Duration::from_secs(3), peripheral.is_connected()).await {
+                    Ok(Ok(v)) => v,
+                    Ok(Err(err)) => {
+                        log::warn!("watchdog: is_connected() error: {err}");
+                        false
+                    }
+                    Err(_) => {
+                        log::warn!("watchdog: is_connected() timed out on stale handle");
+                        false
+                    }
+                };
+
+            // CoreBluetooth returns a cached `true` for minutes after macOS
+            // sleep/wake drops the link, so an RSSI read acts as an active
+            // probe: a live peripheral answers in <100 ms, a stale handle
+            // either errors or hangs until our 2 s timeout.
+            let alive = if !passive_alive {
+                false
+            } else {
+                match time::timeout(Duration::from_secs(2), peripheral.read_rssi()).await {
+                    Ok(Ok(_)) => true,
+                    Ok(Err(err)) => {
+                        log::warn!("watchdog: rssi probe error, treating as stale: {err}");
+                        false
+                    }
+                    Err(_) => {
+                        log::warn!("watchdog: rssi probe timed out, treating as stale");
+                        false
+                    }
                 }
             };
             if alive {

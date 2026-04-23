@@ -76,11 +76,7 @@ impl AppState {
                 continue;
             };
 
-            let alive = match time::timeout(
-                Duration::from_secs(3),
-                peripheral.is_connected(),
-            )
-            .await
+            let alive = match time::timeout(Duration::from_secs(3), peripheral.is_connected()).await
             {
                 Ok(Ok(v)) => v,
                 Ok(Err(err)) => {
@@ -198,4 +194,3 @@ async fn handle_reconnect_failure(
         *attempt = 0;
     }
 }
-

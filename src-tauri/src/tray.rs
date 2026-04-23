@@ -49,9 +49,7 @@ fn load_icon(app: &AppHandle) -> tauri::Result<Image<'static>> {
             return Image::from_path(path);
         }
     }
-    Ok(Image::from_bytes(include_bytes!(
-        "../icons/tray-icon.png"
-    ))?)
+    Ok(Image::from_bytes(include_bytes!("../icons/tray-icon.png"))?)
 }
 
 #[cfg(target_os = "macos")]

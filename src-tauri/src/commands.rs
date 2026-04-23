@@ -27,12 +27,7 @@ pub async fn scan_devices(
     let duration = duration_ms
         .unwrap_or(SCAN_DEFAULT_MS)
         .clamp(SCAN_MIN_MS, SCAN_MAX_MS);
-    state
-        .controller
-        .lock()
-        .await
-        .scan_devices(duration)
-        .await
+    state.controller.lock().await.scan_devices(duration).await
 }
 
 #[tauri::command]
@@ -98,18 +93,13 @@ pub async fn reminder_start(
 }
 
 #[tauri::command]
-pub async fn reminder_stop(
-    app: AppHandle,
-    state: State<'_, AppState>,
-) -> Result<(), DeskError> {
+pub async fn reminder_stop(app: AppHandle, state: State<'_, AppState>) -> Result<(), DeskError> {
     state.reminder.clone().stop_and_emit(app).await;
     Ok(())
 }
 
 #[tauri::command]
-pub async fn reminder_state(
-    state: State<'_, AppState>,
-) -> Result<ReminderState, DeskError> {
+pub async fn reminder_state(state: State<'_, AppState>) -> Result<ReminderState, DeskError> {
     Ok(state.reminder.snapshot().await)
 }
 

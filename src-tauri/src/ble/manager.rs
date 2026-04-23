@@ -188,11 +188,7 @@ impl BleController {
         // release logs.
         if let Some(peripheral) = self.scan_cache.get(&address).cloned() {
             log::debug!("connect_to: trying cached handle for {address}");
-            match time::timeout(
-                Duration::from_secs(6),
-                self.complete_connection(peripheral),
-            )
-            .await
+            match time::timeout(Duration::from_secs(6), self.complete_connection(peripheral)).await
             {
                 Ok(result) => return result,
                 Err(_) => {
@@ -272,18 +268,17 @@ impl BleController {
         peripheral.discover_services().await?;
 
         let chars = peripheral.characteristics();
-        let find = |uuid| {
-            chars
-                .iter()
-                .find(|c| c.uuid == uuid)
-                .cloned()
-                .ok_or(DeskError::MissingCharacteristic(match uuid {
-                    u if u == linak::CHAR_CONTROL => "control",
-                    u if u == linak::CHAR_REFINPUT => "refinput",
-                    u if u == linak::CHAR_POSITION => "position",
-                    _ => "unknown",
-                }))
-        };
+        let find =
+            |uuid| {
+                chars.iter().find(|c| c.uuid == uuid).cloned().ok_or(
+                    DeskError::MissingCharacteristic(match uuid {
+                        u if u == linak::CHAR_CONTROL => "control",
+                        u if u == linak::CHAR_REFINPUT => "refinput",
+                        u if u == linak::CHAR_POSITION => "position",
+                        _ => "unknown",
+                    }),
+                )
+            };
         self.char_control = Some(find(linak::CHAR_CONTROL)?);
         self.char_refinput = Some(find(linak::CHAR_REFINPUT)?);
         let pos_char = find(linak::CHAR_POSITION)?;
@@ -377,10 +372,7 @@ impl BleController {
             MoveDir::Up => linak::CMD_UP,
             MoveDir::Down => linak::CMD_DOWN,
         };
-        let ctrl_ch = self
-            .char_control
-            .clone()
-            .ok_or(DeskError::NotConnected)?;
+        let ctrl_ch = self.char_control.clone().ok_or(DeskError::NotConnected)?;
         let peripheral = self.peripheral.clone().ok_or(DeskError::NotConnected)?;
 
         // Wake first — idle desk ignores the first command otherwise.
@@ -397,10 +389,7 @@ impl BleController {
         self.move_coord.clear_target();
         self.move_coord.cancel().await;
         let peripheral = self.peripheral.clone().ok_or(DeskError::NotConnected)?;
-        let ctrl_ch = self
-            .char_control
-            .clone()
-            .ok_or(DeskError::NotConnected)?;
+        let ctrl_ch = self.char_control.clone().ok_or(DeskError::NotConnected)?;
         write_no_response(&peripheral, &ctrl_ch, &linak::CMD_STOP).await
     }
 
@@ -436,14 +425,8 @@ impl BleController {
         self.move_coord.cancel().await;
 
         let peripheral = self.peripheral.clone().ok_or(DeskError::NotConnected)?;
-        let ref_ch = self
-            .char_refinput
-            .clone()
-            .ok_or(DeskError::NotConnected)?;
-        let ctrl_ch = self
-            .char_control
-            .clone()
-            .ok_or(DeskError::NotConnected)?;
+        let ref_ch = self.char_refinput.clone().ok_or(DeskError::NotConnected)?;
+        let ctrl_ch = self.char_control.clone().ok_or(DeskError::NotConnected)?;
 
         if reversal {
             log::info!(
@@ -544,10 +527,7 @@ impl BleController {
 
     async fn subscribe_position(&mut self) -> Result<(), DeskError> {
         let peripheral = self.peripheral.clone().ok_or(DeskError::NotConnected)?;
-        let ch = self
-            .char_position
-            .clone()
-            .ok_or(DeskError::NotConnected)?;
+        let ch = self.char_position.clone().ok_or(DeskError::NotConnected)?;
 
         // One-shot GATT read so the UI doesn't stare at the floor value
         // until the desk happens to send its next notification.
@@ -813,10 +793,7 @@ pub(crate) async fn scan_for_address(address: &str) -> Result<Peripheral, DeskEr
 ///   wait briefly, then read DPG; response is `[0x01, <sz>, <byte0>, ...]`
 ///   if `response[2] != 0x01`, write `[0x7F, 134, 0x80, 0x01, <rest>]` to
 ///   update user_id[0] to 1.
-async fn prime_user_id(
-    peripheral: &Peripheral,
-    dpg: &Characteristic,
-) -> Result<(), DeskError> {
+async fn prime_user_id(peripheral: &Peripheral, dpg: &Characteristic) -> Result<(), DeskError> {
     // Request current user_id. Uses WithResponse because DPG reads are
     // request/response, not fire-and-forget like the control writes.
     peripheral

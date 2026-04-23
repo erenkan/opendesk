@@ -200,12 +200,16 @@ mod imp {
         if let Ok(panel) = app.get_webview_panel("main") {
             let clone = panel.clone();
             if objc2_foundation::MainThreadMarker::new().is_some() {
-                unsafe { set_panel_top_left(clone.as_panel(), target_x, target_y); }
+                unsafe {
+                    set_panel_top_left(clone.as_panel(), target_x, target_y);
+                }
                 return;
             }
             let (tx, rx) = std::sync::mpsc::channel();
             let _ = window.run_on_main_thread(move || {
-                unsafe { set_panel_top_left(clone.as_panel(), target_x, target_y); }
+                unsafe {
+                    set_panel_top_left(clone.as_panel(), target_x, target_y);
+                }
                 let _ = tx.send(());
             });
             let _ = rx.recv();

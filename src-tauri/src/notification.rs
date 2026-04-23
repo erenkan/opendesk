@@ -51,9 +51,7 @@ pub fn send(app: &AppHandle, title: &str, body: &str) -> Result<(), String> {
         let url = NSURL::fileURLWithPath(&path_ns);
         let attach_id = NSString::from_str("opendesk-icon");
         match UNNotificationAttachment::attachmentWithIdentifier_URL_options_error(
-            &attach_id,
-            &url,
-            None,
+            &attach_id, &url, None,
         ) {
             Ok(attachment) => {
                 log::info!("native notify: attachment ok");
@@ -66,9 +64,8 @@ pub fn send(app: &AppHandle, title: &str, body: &str) -> Result<(), String> {
         }
 
         let req_id = NSString::from_str(&format!("opendesk-{}", uuid::Uuid::new_v4()));
-        let request = UNNotificationRequest::requestWithIdentifier_content_trigger(
-            &req_id, &content, None,
-        );
+        let request =
+            UNNotificationRequest::requestWithIdentifier_content_trigger(&req_id, &content, None);
 
         center.addNotificationRequest_withCompletionHandler(&request, None);
         log::info!("native notify: request added");

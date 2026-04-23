@@ -122,10 +122,16 @@ impl ReminderController {
                 let payload_mins = {
                     let mut g = inner.lock().await;
                     g.started_at_ms = unix_ms();
-                    g.deadline = Some(Instant::now() + Duration::from_secs(g.interval_mins as u64 * 60));
+                    g.deadline =
+                        Some(Instant::now() + Duration::from_secs(g.interval_mins as u64 * 60));
                     g.interval_mins
                 };
-                let _ = app_clone.emit(EVT_FIRE, FirePayload { interval_mins: payload_mins });
+                let _ = app_clone.emit(
+                    EVT_FIRE,
+                    FirePayload {
+                        interval_mins: payload_mins,
+                    },
+                );
                 let state = {
                     let g = inner.lock().await;
                     Self::state_locked(&g)

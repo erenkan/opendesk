@@ -80,6 +80,10 @@ pub struct BleController {
     /// `PeripheralId.to_string()`. Lets `connect_to` skip a second scan on
     /// macOS where the CBPeripheral handle is what we actually need.
     scan_cache: std::collections::HashMap<String, Peripheral>,
+    /// Address of the last successful connection. Survives `force_stale`
+    /// so that the state observer can reconnect to the same desk after a
+    /// sleep/wake-triggered `PoweredOn` event.
+    last_connected_address: Option<String>,
 }
 
 impl BleController {
@@ -97,7 +101,12 @@ impl BleController {
             last_cm_bits: Arc::new(AtomicU32::new(0)),
             last_speed: Arc::new(std::sync::atomic::AtomicI32::new(0)),
             scan_cache: std::collections::HashMap::new(),
+            last_connected_address: None,
         }
+    }
+
+    pub fn last_connected_address(&self) -> Option<&str> {
+        self.last_connected_address.as_deref()
     }
 
     pub fn state(&self) -> &ConnectionState {
@@ -304,6 +313,7 @@ impl BleController {
             device: local_name.clone(),
             address: address.clone(),
         });
+        self.last_connected_address = Some(address.clone());
 
         Ok(DeviceInfo {
             device: local_name,

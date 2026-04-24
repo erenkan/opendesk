@@ -75,6 +75,14 @@ pub fn run() {
                 AppState::run_reconnect_loop(handle).await;
             });
 
+            // Primary sleep/wake recovery path — subscribes to
+            // `CBCentralManager` state events and drives reconnect on
+            // `PoweredOff` → `PoweredOn` transitions.
+            let handle = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                ble::state_observer::run(handle).await;
+            });
+
             Ok(())
         });
 

@@ -2,6 +2,7 @@ pub mod errors;
 pub mod linak;
 pub mod manager;
 pub mod move_coord;
+pub mod state_observer;
 
 pub use errors::DeskError;
 pub use manager::BleController;

@@ -49,6 +49,16 @@ export function Reminder() {
       if (mounted) setState(s);
     });
     const unlistenState = desk.onReminderState(setState);
+    // WKWebView throttles JS timers to a crawl while the NSPanel is hidden,
+    // so `now` and the displayed remaining time freeze. Re-pull state and
+    // reset `now` whenever the panel comes back to refresh the readout.
+    const unlistenVis = desk.onPanelVisibility((visible) => {
+      if (!visible) return;
+      setNow(Date.now());
+      desk.reminderState().then((s) => {
+        if (mounted) setState(s);
+      });
+    });
     const unlistenFire = desk.onReminderFire(async ({ intervalMins }) => {
       // Ask once, lazily.
       if (permissionRef.current == null) {
@@ -72,6 +82,7 @@ export function Reminder() {
     return () => {
       mounted = false;
       unlistenState.then((u) => u());
+      unlistenVis.then((u) => u());
       unlistenFire.then((u) => u());
     };
   }, []);

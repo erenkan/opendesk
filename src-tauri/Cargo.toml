@@ -1,6 +1,6 @@
 [package]
 name = "opendesk"
-version = "0.0.2"
+version = "0.0.3"
 description = "OpenDesk — BLE standing desk controller"
 authors = ["eren"]
 edition = "2021"

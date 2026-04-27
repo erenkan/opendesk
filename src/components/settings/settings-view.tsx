@@ -96,7 +96,7 @@ export function SettingsView({
         <div className="my-3.5 h-px bg-divider" />
 
         <div className="mb-2 flex items-center justify-between text-[10.5px] tracking-[0.02em] text-text-faint">
-          <span>OpenDesk 0.0.2</span>
+          <span>OpenDesk 0.0.3</span>
           <button
             type="button"
             onClick={status?.kind === 'available' ? onInstall : onCheck}
